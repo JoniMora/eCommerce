@@ -4,13 +4,16 @@ from rest_framework import status
 
 from . models import Product
 from . serializers import ProductSerializer
+from backend.pagination import CustomPagination 
 
 
 @api_view(['GET'])
 def get_products(request):
     products = Product.objects.all()
-    seriealizer = ProductSerializer(products, many=True)
-    return Response(seriealizer.data)
+    pagination = CustomPagination()
+    paginated_products = pagination.paginate_queryset(products, request)
+    seriealizer = ProductSerializer(paginated_products, many=True)
+    return pagination.get_paginated_response(seriealizer.data)
 
 
 @api_view(['GET'])
