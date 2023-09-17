@@ -144,7 +144,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173"
 ]
 
-CORS_ALLOWED_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),

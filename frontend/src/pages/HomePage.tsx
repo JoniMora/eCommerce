@@ -1,5 +1,5 @@
 import ProductCard from "../components/ProductCard";
-import { Product } from "../Interfaces";
+import { Product, Page } from "../Interfaces";
 import { get_products } from "../api/products";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -15,7 +15,7 @@ const HomePage = () => {
         ['product'],
         get_products,
         {
-            getNextPageParam: (page: any) => page.meta.next
+            getNextPageParam: (page: Page) => page.meta.next
         }
     )
 
@@ -23,14 +23,14 @@ const HomePage = () => {
         if(inView){
             fetchNextPage()
         }
-    },[inView])
+    },[inView, fetchNextPage])
 
     if(isLoading) return <p>Loading...</p>
     if(error instanceof Error) return <>{toast.error(error.message)}</>
 
     return (
-        <>  //Cambiar el type any de abajo
-            {data?.pages.map((page: any) => ( 
+        <> 
+            {data?.pages.map((page: Page) => ( 
                 <>
                     <div className="flex justify-center">
                         <div

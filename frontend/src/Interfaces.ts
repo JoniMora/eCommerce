@@ -15,3 +15,14 @@ export interface Token {
     exp: number;
     is_staff: boolean;
 }
+
+export interface Meta{
+    next: string | null;
+    previous: string | null;
+    count: number;
+}
+
+export interface Page{
+    data: Product[];
+    meta: Meta;
+}
