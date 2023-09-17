@@ -9,7 +9,7 @@ from backend.pagination import CustomPagination
 
 @api_view(['GET'])
 def get_products(request):
-    products = Product.objects.all()
+    products = Product.objects.all().order_by('id')
     pagination = CustomPagination()
     paginated_products = pagination.paginate_queryset(products, request)
     seriealizer = ProductSerializer(paginated_products, many=True)
@@ -17,7 +17,7 @@ def get_products(request):
 
 
 @api_view(['GET'])
-def get_products(request, name):
+def get_product(request, name):
     products = Product.objects.get(name=name)
     seriealizer = ProductSerializer(products, many=False)
     return Response(seriealizer.data)
