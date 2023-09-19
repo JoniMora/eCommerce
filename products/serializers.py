@@ -7,7 +7,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reviews
-        fields = "_all_"
+        fields = "__all__"
 
     def get_avatar(self, obj):
         return obj.user.avatar.url
@@ -18,7 +18,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = "_all_"
+        fields = "__all__"
 
     def get_reviews(self, obj):
         reviews = obj.reviews_set.all()
