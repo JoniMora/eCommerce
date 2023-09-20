@@ -21,7 +21,7 @@ const Header = () => {
     if(isAuth) {
         const tokenDecoded : Token = jwt_decode(token)
         console.log(tokenDecoded)
-        var is_admin = (tokenDecoded.is_staff);  
+        var isAdmin = (tokenDecoded.is_staff);  
     } 
 
     function logOutFun() {
@@ -83,7 +83,7 @@ const Header = () => {
                                         </>
                                     )}
 
-                                    {is_admin && is_admin && (
+                                    {isAdmin && isAdmin && (
                                         <Link to={'/admin'} className='text-black p-2 px-4 rounded-lg hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'>
                                             Admin Panel
                                         </Link>
@@ -207,7 +207,7 @@ const Header = () => {
                             </div>
                         )}
 
-                        {is_admin  && (
+                        {isAdmin  && (
                             <div className="w-full">
                                 <Link to={'/admin'} className='text-black p-2 px-4 rounded-lg hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'>
                                     Admin Panel
