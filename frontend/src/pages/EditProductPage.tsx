@@ -1,11 +1,11 @@
-import React, { useState, ChangeEvent } from 'react';
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postProduct } from '../api/products';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, ChangeEvent, useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { editProduct, getSoloProduct } from '../api/products';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import Loader from '../components/Loader';
 
-const AddProductPage = () => {
+const EditProductPage = () => {
     const [name, setName] = useState<string>('');
     const [countInStock, setCountInStock] = useState<number>(0);
     const [category, setCategory] = useState<string>('');
@@ -16,11 +16,33 @@ const AddProductPage = () => {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [isHovered, setIsHovered] = useState(false);
 
+    const { id } = useParams();
+    let prodId: number;
+    if(id !== undefined){
+        prodId = Number(id)
+    }
+
+    const { data } = useQuery({
+        queryKey: ['products', id],
+        queryFn: () => getSoloProduct(prodId)
+    })
+
+    useEffect(() => {
+        if(data){
+            setName(data.name)
+            setCountInStock(data.count_in_stock)
+            setDescription(data.description)
+            setCategory(data.category)
+            setPrice(data.price)
+            setImage(data.image)
+        }
+    }, [data])
+
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const addProdMutation = useMutation({
-        mutationFn: postProduct,
+    const editProdMutation = useMutation({
+        mutationFn: editProduct,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
             toast.success("Product created!")
@@ -34,13 +56,14 @@ const AddProductPage = () => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-            addProdMutation.mutate({ 
+            editProdMutation.mutate({ 
             name: name, 
             count_in_stock: countInStock, 
             category: category, 
             description: description, 
             price: price, 
-            image: image 
+            image: image,
+            id: prodId
         });
     };
 
@@ -94,7 +117,7 @@ const AddProductPage = () => {
         setIsHovered(false)
     }
 
-    if(addProdMutation.isLoading) return (<Loader />)
+    if(EditProductPage.isLoading) return (<Loader />)
 
     return(
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 ">
@@ -103,7 +126,7 @@ const AddProductPage = () => {
                     <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                         <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                Add Product
+                                Edit Product
                             </h3>
                             <Link
                                 to='/admin'
@@ -289,7 +312,7 @@ const AddProductPage = () => {
                                                     </span>
                                                 </button>
 
-                                                <img className="h-48 w-96" src={filePreview} alt="Imagen seleccionada"/>
+                                                <img className="h-48 w-96" src={filePreview || `${import.meta.env.VITE_BACKEND_URL}${data.image}`} alt="Imagen seleccionada"/>
                                             </div>
                                         )}
                                     </div>
@@ -312,7 +335,7 @@ const AddProductPage = () => {
                                     ></path>
                                 </svg>
 
-                                Add new product
+                                Save product
                             </button>
                         </form>
                     </div>
@@ -321,4 +344,4 @@ const AddProductPage = () => {
         </div>
     )
 }
-export default AddProductPage;
+export default EditProductPage;
