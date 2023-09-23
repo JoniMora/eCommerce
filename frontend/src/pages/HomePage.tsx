@@ -1,6 +1,6 @@
 import ProductCard from "../components/ProductCard";
 import { Product, Page } from "../Interfaces";
-import { get_products } from "../api/products";
+import { getProducts } from "../api/products";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
@@ -13,7 +13,7 @@ const HomePage = () => {
 
     const { data, isLoading, error, isFetchingNextPage, fetchNextPage, hasNextPage} = useInfiniteQuery(
         ['product'],
-        get_products,
+        getProducts,
         {
             getNextPageParam: (page: Page) => page.meta.next
         }
