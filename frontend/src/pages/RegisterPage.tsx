@@ -15,9 +15,7 @@ const RegisterPage = () => {
     const [last_name, setLastName] = useState("");
     const [password, setPassword] = useState("");
     const [re_password, setRePassword] = useState("");
-    console.log(import.meta.env.VITE_BACKEND_URL)
-
-
+    
 
     const registerMutation = useMutation({
         mutationFn: () => registerRequest(email, name, last_name, password),

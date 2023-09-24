@@ -5,6 +5,8 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useInView } from "react-intersection-observer";
+import Loader from '../components/Loader';
+
 
 
 const HomePage = () => {
@@ -25,7 +27,7 @@ const HomePage = () => {
         }
     },[inView, fetchNextPage])
 
-    if(isLoading) return <p>Loading...</p>
+    if(isLoading) return (<Loader />)
     if(error instanceof Error) return <>{toast.error(error.message)}</>
 
     return (
@@ -57,7 +59,7 @@ const HomePage = () => {
                         hasNextPage && (
                             <div ref={ref}>
                                 {isLoading || isFetchingNextPage ? (
-                                    <p>Loading...</p>
+                                    <Loader />
                                 ) : null}
                             </div>
                         )}
