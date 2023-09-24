@@ -18,11 +18,16 @@ const Header = () => {
     const { isAuth } = useAuthStore()
     const cart = useCartStore(state => state.cart);
 
+    let isAdmin: boolean;
+    //let avatar: string;
+
     if(isAuth) {
         const tokenDecoded : Token = jwt_decode(token)
-        console.log(tokenDecoded)
-        var isAdmin = (tokenDecoded.is_staff);  
+        isAdmin = tokenDecoded.is_staff;  
+        //avatar = tokenDecoded.avatar
     } 
+
+    //console.log(avatar)
 
     function logOutFun() {
         useAuthStore.getState().logout()

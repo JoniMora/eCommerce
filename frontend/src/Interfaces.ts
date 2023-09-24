@@ -1,7 +1,6 @@
 export interface Product {
     id?: number
     name: string
-    slug: string
     description: string
     price: number
     rating?: number
@@ -15,6 +14,7 @@ export interface Product {
 export interface Token {
     exp: number;
     is_staff: boolean;
+    avatar: string;
 }
 
 export interface Meta{

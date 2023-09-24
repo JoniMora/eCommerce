@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { editProduct, getSoloProduct } from '../api/products';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import Loader from '../components/Loader';
+
 
 const EditProductPage = () => {
     const [name, setName] = useState<string>('');
@@ -45,7 +45,7 @@ const EditProductPage = () => {
         mutationFn: editProduct,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
-            toast.success("Product created!")
+            toast.success("Product Edited!")
             navigate('/admin')
         },
         onError: () => {
@@ -116,8 +116,6 @@ const EditProductPage = () => {
         setImage(null)
         setIsHovered(false)
     }
-
-    if(EditProductPage.isLoading) return (<Loader />)
 
     return(
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 ">
