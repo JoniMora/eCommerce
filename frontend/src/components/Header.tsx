@@ -19,15 +19,13 @@ const Header = () => {
     const cart = useCartStore(state => state.cart);
 
     let isAdmin: boolean;
-    //let avatar: string;
+    let avatar: string;
 
     if(isAuth) {
         const tokenDecoded : Token = jwt_decode(token)
         isAdmin = tokenDecoded.is_staff;  
-        //avatar = tokenDecoded.avatar
+        avatar = tokenDecoded.avatar
     } 
-
-    //console.log(avatar)
 
     function logOutFun() {
         useAuthStore.getState().logout()
@@ -133,7 +131,7 @@ const Header = () => {
                                         <Menu.Button className="flex rounded-full ml-8 text-sm focus:outline-none ">
                                             <span className="sr-only">Open user menu</span>
                                             
-                                            <img className="h-8 w-8 rounded-full" src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSgvrqguk2COs_5g8DOQp3AVgGcDfGPqlbk1lB6kVzAS07X1gwV" alt=""/> 
+                                            <img className="h-8 w-8 rounded-full" src={`${import.meta.env.VITE_BACKEND_URL}${avatar}`} alt=""/> 
                                         </Menu.Button>
                                     </div>
 

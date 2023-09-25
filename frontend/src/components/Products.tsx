@@ -28,6 +28,8 @@ const Products = () => {
         }
     },[inView, fetchNextPage])
 
+    console.log(data)
+
     const queryClient = useQueryClient();
 
     const deleteProdMutation = useMutation({

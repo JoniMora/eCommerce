@@ -1,6 +1,11 @@
 import { Product } from "../Interfaces";
 import { authAxios, axi } from "./useAxios";
 
+export const getSolo =async (name: string) => {
+    const response = await authAxios.get(`/products/get/${name}/`)
+    return response.data
+}
+
 export const getSoloProduct =async (id: number) => {
     const response = await authAxios.get(`/products/get/admin/${id}/`)
     return response.data
