@@ -25,8 +25,8 @@ def get_product_admin(request, id):
 
 
 @api_view(['GET'])
-def get_product(request, name):
-    products = Product.objects.get(name=name)
+def get_product(request, slug):
+    products = Product.objects.get(slug=slug)
     serializer = ProductSerializer(products, many=False)
     return Response(serializer.data)
 
@@ -36,46 +36,37 @@ def create_product(request):
     if request.user.is_staff:
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            name = serializer.validated_data['name']
+            category = serializer.validated_data['category']
+            s = name + category
+            slug = slugify(s)
+            if serializer.Meta.model.objects.filter(slug=slug).exists():
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save(user=request.user, slug=slug)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(serializer.data, status=status.HTTP_401_UNAUTHORIZED)
 
-'''
+
 @api_view(['PUT'])
 def edit_product(request, pk):
     product = Product.objects.get(pk=pk)
     if request.user.is_staff:
         serializer = ProductSerializer(product, data=request.data)
         if serializer.is_valid():
+            name = serializer.validated_data['name']
+            category = serializer.validated_data['category']
+            s = name + category
+            slug = slugify(s)
+            if serializer.Meta.model.objects.filter(slug=slug).exists():
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save(user=request.user, slug=slug)
             return Response(serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
-'''
 
-@api_view(['PUT'])
-def edit_product(request, pk):
-    print("Datos de entrada:", request.data)
-    try:
-        product = Product.objects.get(pk=pk)
-    except Product.DoesNotExist:
-        return Response({'error': 'El producto no existe.'}, status=status.HTTP_404_NOT_FOUND)
-    except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    if request.user.is_staff:
-        serializer = ProductSerializer(product, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            error_message = "Error en la validación del serializador: {}".format(serializer.errors)
-            return Response({'error': error_message}, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        return Response({'error': 'No tienes permiso para editar este producto.'}, status=status.HTTP_401_UNAUTHORIZED)
-    
 
 @api_view(['DELETE'])
 def delete_product(request, pk):
