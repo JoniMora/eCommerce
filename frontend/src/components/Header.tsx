@@ -1,6 +1,6 @@
 import { BsFillMoonStarsFill, BsFillSunFill } from "react-icons/bs";
 import { useDarkMode } from "../store/theme";
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { HiOutlineShoppingBag } from "react-icons/hi";
@@ -10,6 +10,7 @@ import Logo from '../assets/logo.png'
 import jwt_decode from "jwt-decode"
 import { useCartStore } from "../store/cart";
 import { Token } from "../Interfaces";
+import { useSearchStore } from "../store/search";
 
 const Header = () => {
 
@@ -26,6 +27,12 @@ const Header = () => {
         isAdmin = tokenDecoded.is_staff;  
         avatar = tokenDecoded.avatar
     } 
+
+    const setSearchTerm = useSearchStore((state) => state.setSearchTerm)
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(event.target.value)
+    }
 
     function logOutFun() {
         useAuthStore.getState().logout()
@@ -104,11 +111,17 @@ const Header = () => {
                                 <span className="sr-only">Search icon</span>
                             </div>
 
-                            <input type="text" id="search-navbar" className="block w-full md:w-[200px] lg:w-[400px] xl:w-[600px] p-2
-                            pl-10 text-sm text-gray-900 border border-gray-300 rounded-full 
-                            bg-gray-50 dark:bg-gray-700 outline-none
-                            dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
-                            " placeholder="Search..."/>
+                            <input 
+                                type="text" 
+                                id="search-navbar" 
+                                className="block w-full md:w-[200px] lg:w-[400px] xl:w-[600px] p-2
+                                pl-10 text-sm text-gray-900 border border-gray-300 rounded-full 
+                                bg-gray-50 dark:bg-gray-700 outline-none
+                                dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
+                                " 
+                                placeholder="Search..."
+                                onChange={handleInputChange}
+                            />
                         </div>
 
                         <div className="absolute space-x-2 inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
