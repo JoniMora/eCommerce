@@ -9,9 +9,11 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { Product, Page } from "../Interfaces";
 
+interface Props{
+    results: any;
+}
 
-
-const Products = () => {
+const Products = ({results}: Props) => {
     const { ref, inView } = useInView()
 
     const { data, isLoading, error, isFetchingNextPage, fetchNextPage, hasNextPage} = useInfiniteQuery(
@@ -76,10 +78,10 @@ const Products = () => {
                     </tr>
                 </thead>
 
-                {data?.pages.map((page: Page) => ( 
+                {results && results.products.length > 0 ? (
                     <>
-                        <tbody key={page.meta.next}>
-                            {page.data.map((product: Product) => (
+                        {results && results.products.map((product: Product) => (
+                            <tbody>
                                 <tr className="border-b dark:border-gray-700">
                                     <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {product.id}
@@ -110,27 +112,68 @@ const Products = () => {
                                         </Link>
                                     </td>
                                 </tr>
-                            ))}
-                        </tbody>
-
-                        {!isLoading && data?.pages.length === 0 && (
-                            <p className="text-xl text-slate-800 dark:text-slate-200">
-                                No more results
-                            </p>
-                        )}
-                        {!isLoading &&
-                            data?.pages?.length !== undefined &&
-                            data.pages.length > 0 &&
-                            hasNextPage && (
-                                <div ref={ref}>
-                                    {isLoading || isFetchingNextPage ? (
-                                        <p>Loading...</p>
-                                    ) : null}
-                                </div>
-                            )
-                        }
+                            </tbody>
+                        ))}
                     </>
-                ))}
+                ) : (
+                    <>
+                        {data?.pages.map((page: Page) => ( 
+                            <>
+                                <tbody key={page.meta.next}>
+                                    {page.data.map((product: Product) => (
+                                        <tr className="border-b dark:border-gray-700">
+                                            <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {product.id}
+                                            </th>
+                                            
+                                            <td className="px-4 py-3">
+                                                {product.name}
+                                            </td>
+                                                
+                                            <td className="px-4 py-3">
+                                                $ {product.price}
+                                            </td>
+
+                                            <td className="px-4 py-3">
+                                                {product.count_in_stock}
+                                            </td>
+                                                
+                                            <td className="px-4 py-3 flex items-center justify-center gap-4">
+                                                <BsFillTrashFill size={22} className="text-red-400 cursor-pointer" 
+                                                    onClick={() => {
+                                                        if(product.id !== undefined) {
+                                                            deleteProdMutation.mutate(product.id)}
+                                                    }} 
+                                                />
+                    
+                                                <Link to={`edit/${product.id}`}>
+                                                    <AiFillEdit size={22} className="text-blue-400 cursor-pointer"/>
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+
+                                {!isLoading && data?.pages.length === 0 && (
+                                    <p className="text-xl text-slate-800 dark:text-slate-200">
+                                        No more results
+                                    </p>
+                                )}
+                                {!isLoading &&
+                                    data?.pages?.length !== undefined &&
+                                    data.pages.length > 0 &&
+                                    hasNextPage && (
+                                        <div ref={ref}>
+                                            {isLoading || isFetchingNextPage ? (
+                                                <p>Loading...</p>
+                                            ) : null}
+                                        </div>
+                                    )
+                                }
+                            </>
+                        ))}
+                    </>
+                )}
             </table>
         </div>
     )
