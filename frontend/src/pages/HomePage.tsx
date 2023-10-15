@@ -8,7 +8,6 @@ import { useInView } from "react-intersection-observer";
 import Loader from '../components/Loader';
 
 
-
 const HomePage = () => {
 
     const { ref, inView } = useInView()
