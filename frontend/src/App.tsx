@@ -13,6 +13,9 @@ import AddProductPage from "./pages/AddProductPage"
 
 import EditProductPage from "./pages/EditProductPage"
 
+import CategoryPage from "./pages/CategoryPage"
+import SearchByCate from "./pages/SearchByCategory"
+
 
 function App() {
  
@@ -24,6 +27,9 @@ function App() {
           
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
+
+          <Route path="category" element={<CategoryPage />} />
+          <Route path="category/:cate" element={<SearchByCate />} />
 
           <Route path="product/:slug" element={<SoloProduct />} />
 

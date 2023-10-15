@@ -76,7 +76,7 @@ const Header = () => {
                                             Home
                                         </Link>
 
-                                        <Link to={'/'} className='text-black p-2 px-4 rounded-lg hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'>
+                                        <Link to={'/category'} className='text-black p-2 px-4 rounded-lg hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'>
                                             Categories
                                         </Link>
                                         </>
@@ -206,7 +206,7 @@ const Header = () => {
                                 Home
                                 </Link>
 
-                                <Link to={'/'} className='text-black p-2 px-4 rounded-lg hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'>
+                                <Link to={'/category'} className='text-black p-2 px-4 rounded-lg hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'>
                                     Categories
                                 </Link>
                             </div>
