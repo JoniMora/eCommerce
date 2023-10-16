@@ -28,3 +28,10 @@ export interface Page{
     data: Product[];
     meta: Meta;
 }
+
+export interface User {
+    id: number;
+    email: string;
+    name: string;
+    last_name: string;
+}
