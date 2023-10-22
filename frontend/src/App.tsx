@@ -16,6 +16,8 @@ import EditProductPage from "./pages/EditProductPage"
 import CategoryPage from "./pages/CategoryPage"
 import SearchByCate from "./pages/SearchByCategory"
 
+import CartPage from "./pages/CartPage"
+
 
 function App() {
  
@@ -34,6 +36,7 @@ function App() {
           <Route path="product/:slug" element={<SoloProduct />} />
 
           <Route element={<PrivateRoute />}>
+            <Route path="cart" element={<CartPage />} />
             
           </Route>
 
