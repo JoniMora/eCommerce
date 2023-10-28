@@ -7,7 +7,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     total_price = models.CharField(max_length=250, blank=True)
     is_delivered = models.BooleanField(default=False)
-    delivered_at = models.DateTimeField(auto_now_add=False)
+    delivered_at = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -24,4 +24,3 @@ class ShippingAddress(models.Model):
     address = models.CharField(max_length=250, blank=True)
     city = models.CharField(max_length=100, blank=True)
     postal_code = models.CharField(max_length=100, blank=True)
-    country = models.CharField(max_length=100, blank=True)
