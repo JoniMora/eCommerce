@@ -1,11 +1,52 @@
 import { useCartStore } from "../store/cart"
+import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { createOrder } from "../api/orders" 
+import { useNavigate } from "react-router-dom"
+import { toast } from "react-hot-toast"
 
 
 const CartPage = () => {
     const removeFromCart = useCartStore(state => state.removeFromCart)
     const addToCart = useCartStore(state => state.addToCart)
+    const removeAll = useCartStore(state => state.removeAll)
+    
+    
     const cart = useCartStore(state => state.cart);
     const total_price = useCartStore(state => state.totalPrice);
+    const [address, setAddress] = useState<string>('');
+    const [city, setCity] = useState<string>('');
+    const [postal_code, setPostalCode] = useState<string>('');
+
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    const createOrderMut = useMutation({
+        mutationFn: createOrder,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
+            toast.success("Order created!")
+            //delete all cart in frontend
+            removeAll()
+            navigate('/')
+        },
+        onError: () => {
+            toast.error("Error!")
+            navigate('/')
+        },
+    });
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        createOrderMut.mutate({ 
+            order_items: cart,
+            total_price: total_price,
+            address: address,
+            city: city,
+            postal_code: postal_code,
+        });
+    };
+
 
     return (
         <>
@@ -90,8 +131,43 @@ const CartPage = () => {
                         </div>
                     </div>
                 </div>
+                
+                <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                    <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                        Shipping address 
+                    </h1>
+                    
+                    <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+                            <input
+                                onChange={(e) => setAddress(e.target.value)}
+                                value={address} 
+                                type="text" name="address" id="address" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your address"/>
+                        </div>
+                        
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City</label>
+                            <input
+                                onChange={(e) => setCity(e.target.value)}
+                                value={city} 
+                                type="text" name="address" id="address" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your address"/>
+                        </div>
+
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Postal Code</label>
+                            <input
+                                onChange={(e) => setPostalCode(e.target.value)}
+                                value={postal_code} 
+                                type="text" name="address" id="address" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your address"/>
+                        </div>
+                                                
+                        <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Create Order</button>
+                    </form>
+                </div>
             </div>
         </section>
+
     </>
     )
 }

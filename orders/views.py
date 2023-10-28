@@ -26,7 +26,7 @@ def create_order(request):
     total_price = data['total_price']
 
     # Calcular la suma de los precios de los productos
-    sum_of_prices = sum(item['price'] for item in orderItems)
+    sum_of_prices = sum(int(float(item['price'])) * item['quantity'] for item in orderItems)
 
     if total_price == sum_of_prices:
         # Crear la orden
@@ -35,11 +35,10 @@ def create_order(request):
             total_price=total_price
         )
 
-        ShippingAddress.objects.create(
+        ShippingAddress.objects.create(        
             order=order,
             address=data['address'],
             city=data['city'],
-            country=data['country'],
             postal_code=data['postal_code']
         )
 
@@ -48,7 +47,7 @@ def create_order(request):
             item = Orderitem.objects.create(
                 product=product,
                 order=order,
-                name=product.name,
+                name=product,
                 quantity=i['quantity'],
                 price=i['price']
             )

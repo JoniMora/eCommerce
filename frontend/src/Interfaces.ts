@@ -12,6 +12,14 @@ export interface Product {
     num_reviews?: number
 }
 
+export interface Order{
+    total_price: number,
+    address: string,
+    city: string,
+    postal_code: string,
+    order_items: Product[]
+}
+
 export interface Token {
     exp: number;
     is_staff: boolean;
