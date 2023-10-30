@@ -1,9 +1,11 @@
 import { useCartStore } from "../store/cart"
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { createOrder } from "../api/orders" 
+import { create_order } from "../api/orders" 
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+
 
 
 const CartPage = () => {
@@ -22,11 +24,10 @@ const CartPage = () => {
     const queryClient = useQueryClient();
 
     const createOrderMut = useMutation({
-        mutationFn: createOrder,
+        mutationFn: create_order,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["orders"] });
             toast.success("Order created!")
-            //delete all cart in frontend
             removeAll()
             navigate('/')
         },
@@ -36,8 +37,27 @@ const CartPage = () => {
         },
     });
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const createOrder = (data: any, actions: any) => {
+        return actions.order.create({
+            purchase_units: [
+                {
+                    amount: {
+                        value: total_price
+                    },
+                },
+            ],
+            
+            application_context: {
+                shipping_preference: "NO_SHIPPING"
+            }
+        });
+    };
+
+    const onApprove = (data: any, actions: any) => {
+        return actions.order.capture(handleSubmit());
+    };
+
+    const handleSubmit = () => {
         createOrderMut.mutate({ 
             order_items: cart,
             total_price: total_price,
@@ -101,7 +121,7 @@ const CartPage = () => {
                                                         <button onClick={() => removeFromCart(product)} className="inline-flex items-center p-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
                                                             <span className="sr-only">Quantity button</span>
                                                             
-                                                            <svg className="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                                                            <svg className="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path></svg>
                                                         </button>
                                                     
                                                         <div>
@@ -111,7 +131,7 @@ const CartPage = () => {
                                                         
                                                         <button onClick={() => addToCart(product)} className="inline-flex items-center p-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
                                                             <span className="sr-only">Quantity button</span>
-                                                            <svg className="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                                                            <svg className="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"></path></svg>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -162,7 +182,14 @@ const CartPage = () => {
                                 type="text" name="address" id="address" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your address"/>
                         </div>
                                                 
-                        <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Create Order</button>
+                        <div className="ml-[180px]">
+                            <PayPalScriptProvider options={{ clientId: " ", currency: "USD"}}>
+                                <PayPalButtons 
+                                createOrder={(data, actions) => createOrder(data, actions)}
+                                onApprove={(data, actions) => onApprove(data, actions)}
+                                style={{ layout: "horizontal" }} />
+                            </PayPalScriptProvider>
+                        </div>
                     </form>
                 </div>
             </div>
