@@ -23,7 +23,10 @@ export interface Order{
 export interface Token {
     exp: number;
     is_staff: boolean;
-    avatar: string;
+    avatar: File | null;
+    email: string;
+    name: string;
+    last_name: string;
 }
 
 export interface Meta{
@@ -38,8 +41,9 @@ export interface Page{
 }
 
 export interface User {
-    id: number;
+    id?: number;
     email: string;
     name: string;
     last_name: string;
+    avatar: File | null;
 }

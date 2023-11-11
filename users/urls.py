@@ -9,4 +9,6 @@ urlpatterns = [
     path('refresh/', TokenRefreshView.as_view()),
     path('get/', views.getUsers),
     path('delete/<int:pk>/', views.deleteUser),
+    path('edit/<str:email>/', views.edit_profile),
+
 ]

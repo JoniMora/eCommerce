@@ -1,4 +1,21 @@
 import { authAxios, axi } from "./useAxios";
+import { User } from "../Interfaces";
+
+export const getOnlyUser = async (id: number) => {
+    const response = await authAxios.get(`/users/get/solo/${id}/`) 
+    return response.data
+};
+
+export const editUser = async(data: User) => {
+    const formData = new FormData();
+    formData.append("name", data.name)
+    formData.append("last_name", data.last_name)
+    formData.append("email", data.email)
+    if(data.avatar){
+        formData.append("avatar", data.avatar)
+    }
+    await authAxios.put(`/users/edit/${data.email}/`, formData)
+}
 
 export const searchUsers = async (query: string) => {
     const response = await authAxios.get(`/users/search/?query=${query}`)
