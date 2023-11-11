@@ -7,6 +7,18 @@ from rest_framework import status
 from . models import User
 from . serializers import RegistrarUserSerializer, MyTokenObtainPairSerializer, UserSerializer
 
+@api_view(['PUT'])
+def edit_profile(request, email):
+    user = User.objects.get(email = email)
+    if request.user.email == email:
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
+    
+
 @api_view(['GET'])
 def search(request):
     query = request.query_params.get('query')

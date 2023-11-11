@@ -18,6 +18,9 @@ import SearchByCate from "./pages/SearchByCategory"
 
 import CartPage from "./pages/CartPage"
 
+import UserProfile from "./pages/UserProfile"
+import SoloOrder from "./pages/SoloOrders"
+
 
 function App() {
  
@@ -37,7 +40,9 @@ function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path="cart" element={<CartPage />} />
-            
+            <Route path="profile" element={<UserProfile />} />
+            <Route path="order/:id" element={<SoloOrder />} />
+
           </Route>
 
           <Route path="admin" element={<AdminPrivateRoute />}>
