@@ -1,54 +1,54 @@
-import { useAuthStore } from "../store/auth";
-import { Token } from "../Interfaces";
-import jwt_decode from "jwt-decode";
-import React, { useState, ChangeEvent, useEffect } from "react";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { editUser } from "../api/users";
-import { toast } from "react-hot-toast";
-import { my_orders } from "../api/orders";
-import Loader from "../components/Loader";
-import { Link } from "react-router-dom";
-
+import { useAuthStore } from "../store/auth"
+import { Token, Order } from "../Interfaces"
+import jwt_decode from "jwt-decode"
+import React, { useState, ChangeEvent, useEffect } from "react"
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
+import { editUser, getOnlyUser } from "../api/users"
+import { toast } from "react-hot-toast"
+import { my_orders } from "../api/orders"
+import Loader from "../components/Loader"
+import { Link } from "react-router-dom"
 
 const UserProfile = () => {
-    
-    const [show, setShow] = useState(true);
-    const [stateName, setStateName] = useState<string>("");
-    const [stateLast, setStateLast] = useState<string>("");
-    const [image, setImage] = useState<File | null>(null);
-    const [filePreview, setFilePreview] = useState<string>("");
-    const inputRef = React.useRef<HTMLInputElement>(null);
-    const [isHovered, setIsHovered] = useState(false);
+    const [show, setShow] = useState(true)
+    const [stateName, setStateName] = useState<string>("")
+    const [stateLast, setStateLast] = useState<string>("")
+    const [image, setImage] = useState<File | null>(null)
+    const [filePreview, setFilePreview] = useState<string>("")
+    const inputRef = React.useRef<HTMLInputElement>(null)
+    const [isHovered, setIsHovered] = useState(false)
 
-    const token: string = useAuthStore.getState().access;
-    const tokenDecoded: Token = jwt_decode(token);
-    const avatar = tokenDecoded.avatar
-    const email = tokenDecoded.email
-    const name = tokenDecoded.name
-    const last_name = tokenDecoded.last_name
+    const token: string = useAuthStore.getState().access
+    const tokenDecoded: Token = jwt_decode(token)
+    const id = tokenDecoded.user_id
 
+    const { data: user } = useQuery({
+        queryKey: ['user'],
+        queryFn: () => getOnlyUser(id)
+    })
 
     useEffect(() => {
-        setStateName(name);
-        setStateLast(last_name);
-        setImage(avatar);
-        
-    }, [])
+        if(user){
+            setStateName(user.name)
+            setStateLast(user.last_name)
+            setImage(user.avatar)
+        }
+    }, [user])
 
     const queryClient = useQueryClient()
 
     const editProfileMut = useMutation({
         mutationFn: editUser,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["users"] });
-            toast.success("Profile updated!");
-            setShow(true);
+            queryClient.invalidateQueries({ queryKey: ["users"] })
+            toast.success("Profile updated!")
+            setShow(true)
         },
         onError: () => {
-            toast.error("Error!");
-            setShow(true);
+            toast.error("Error!")
+            setShow(true)
         },
-    });
+    })
 
     const { data, isError, isLoading } = useQuery({
         queryKey: ['orders'],
@@ -57,41 +57,41 @@ const UserProfile = () => {
 
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+        event.preventDefault()
         editProfileMut.mutate({
             name: stateName,
             last_name: stateLast,
             avatar: image,
-            email: email,
-        });
-    };
+            email: user.email,
+        })
+    }
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files && event.target.files[0];
+        const file = event.target.files && event.target.files[0]
         if (file) {
-            setImage(file);
-            const reader = new FileReader();
+            setImage(file)
+            const reader = new FileReader()
             reader.onload = () => {
-                setFilePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+                setFilePreview(reader.result as string)
+            }
+            reader.readAsDataURL(file)
         }
-    };
+    }
 
     const handleDragEnter = (event: React.DragEvent<HTMLLabelElement>) => {
-        event.preventDefault();
-        setIsHovered(true);
-    };
+        event.preventDefault()
+        setIsHovered(true)
+    }
 
     const handleDragLeave = (event: React.DragEvent<HTMLLabelElement>) => {
-        event.preventDefault();
-        setIsHovered(false);
-    };
+        event.preventDefault()
+        setIsHovered(false)
+    }
 
     const removeImage = () => {
-        setImage(null);
-        setIsHovered(false);
-    };
+        setImage(null)
+        setIsHovered(false)
+    }
 
     if (isError) return toast.error("Error!")
     if (isLoading) return <Loader />
@@ -104,16 +104,16 @@ const UserProfile = () => {
                         <div className="flex flex-col items-center pb-10">
                             <img
                                 className="w-24 h-24 mb-3 mt-3 rounded-full shadow-lg"
-                                src={`${import.meta.env.VITE_BACKEND_URL}${avatar}`}
+                                src={`${import.meta.env.VITE_BACKEND_URL}${user.avatar}`}
                                 alt="User image"
                             />
 
                             <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                                {email}
+                                {user.email}
                             </h5>
 
                             <span className="text-sm text-gray-500 dark:text-gray-400">
-                                {name} {last_name}
+                                {user.name} {user.last_name}
                             </span>
 
                             <div className="flex mt-4 space-x-3 md:mt-6">
@@ -175,9 +175,9 @@ const UserProfile = () => {
                                     </label>
                                     <input
                                         type="text"
-                                        value={stateName}
+                                        value={stateLast}
                                         onChange={(e) =>
-                                            setStateName(e.target.value)
+                                            setStateLast(e.target.value)
                                         }
                                         className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         placeholder="Last Name"
@@ -221,7 +221,7 @@ const UserProfile = () => {
                                                         Close modal
                                                     </span>
                                                 </button>
-                                                <img className="h-48 w-96" src={filePreview || `${import.meta.env.VITE_BACKEND_URL}${avatar}`} alt="Imagen seleccionada"/>
+                                                <img className="h-48 w-96" src={filePreview || `${import.meta.env.VITE_BACKEND_URL}${user.avatar}`} alt="Imagen seleccionada"/>
                                             </div>
                                         )}
                                     </div>
@@ -239,6 +239,6 @@ const UserProfile = () => {
             </div>
         </div>
     )
-};
+}
 
 export default UserProfile

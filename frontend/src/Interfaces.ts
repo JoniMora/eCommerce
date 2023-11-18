@@ -21,6 +21,7 @@ export interface Order{
 }
 
 export interface Token {
+    user_id: number;
     exp: number;
     is_staff: boolean;
     avatar: File | null;
