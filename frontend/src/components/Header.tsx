@@ -11,22 +11,30 @@ import jwt_decode from "jwt-decode"
 import { useCartStore } from "../store/cart";
 import { Token } from "../Interfaces";
 import { useSearchStore } from "../store/search";
+import { useQuery } from "@tanstack/react-query";
+import { getOnlyUser } from "../api/users";
 
 const Header = () => {
 
-    const { toggleDarkMode, darkMode } = useDarkMode();
-    const token: string = useAuthStore.getState().access;
+    const { toggleDarkMode, darkMode } = useDarkMode()
+    const token: string = useAuthStore.getState().access
     const { isAuth } = useAuthStore()
-    const cart = useCartStore(state => state.cart);
+    const cart = useCartStore(state => state.cart)
 
-    let isAdmin: boolean;
-    let avatar: string;
+    let isAdmin: boolean
+    let userID: number
 
     if(isAuth) {
         const tokenDecoded : Token = jwt_decode(token)
-        isAdmin = tokenDecoded.is_staff;  
-        avatar = tokenDecoded.avatar
+        isAdmin = tokenDecoded.is_staff
+        userID = tokenDecoded.user_id
     } 
+
+    const { data: user } = useQuery({
+        queryKey: ['user'],
+        queryFn: () => getOnlyUser(userID)
+
+    })
 
     const setSearchTerm = useSearchStore((state) => state.setSearchTerm)
 
@@ -42,8 +50,6 @@ const Header = () => {
     function classNames(...classes: any) {
         return classes.filter(Boolean).join(' ')
     }
-
-  // data array de productos
 
     return (
         <Disclosure as="nav" className="bg-grey dark:bg-gray-800">
@@ -143,8 +149,9 @@ const Header = () => {
                                     <div>
                                         <Menu.Button className="flex rounded-full ml-8 text-sm focus:outline-none ">
                                             <span className="sr-only">Open user menu</span>
-                                            
-                                            <img className="h-8 w-8 rounded-full" src={`${import.meta.env.VITE_BACKEND_URL}${avatar}`} alt=""/> 
+                                            {user && user.avatar !== undefined && 
+                                                <img className="h-8 w-8 rounded-full" src={`${import.meta.env.VITE_BACKEND_URL}${user.avatar}`} alt=""/> 
+                                            }
                                         </Menu.Button>
                                     </div>
 
