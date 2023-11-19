@@ -5,6 +5,7 @@ import Orders from "../components/Orders"
 import { searchProduct } from "../api/products"
 import { useQuery } from "@tanstack/react-query"
 import { searchUsers } from "../api/users"
+import { search_order } from "../api/orders"
 
 const AdminPage = () => {
     const [show, setShow] = useState(0)
@@ -28,6 +29,16 @@ const AdminPage = () => {
             }
             return {users: []}
         }
+    })
+
+    const { data: orders } = useQuery({
+        queryKey: ["orders", search],
+        queryFn: () => {
+            if (search && show === 1) {
+                return search_order(search)
+            }
+            return { orders: [] }
+        },
     })
 
     return (
@@ -67,7 +78,7 @@ const AdminPage = () => {
                     </div>
                     
                     {show === 0 && <Products results={data} />}
-                    {show === 1 && <Orders/>}
+                    {show === 1 && <Orders results={orders} />}
                     {show === 2 && <Users results={users} />}
 
                 </div>

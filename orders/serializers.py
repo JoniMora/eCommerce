@@ -7,6 +7,8 @@ class ShippingSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    product = serializers.ReadOnlyField(source='product.name')
+    
     class Meta:
         model = Orderitem
         fields = '__all__'

@@ -8,6 +8,16 @@ from .models import Order, Orderitem, ShippingAddress
 from .serializers import OrderSerializer
 from products.models import Product
 
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def search(request):
+    query = request.query_params.get('query')
+    if query is None:
+        query = ''
+    order = Order.objects.filter(user__email__icontains=query)
+    serializer = OrderSerializer(order, many=True)
+    return Response({'orders': serializer.data})
+
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])

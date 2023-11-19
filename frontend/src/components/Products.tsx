@@ -10,7 +10,7 @@ import { useInView } from "react-intersection-observer";
 import { Product, Page } from "../Interfaces";
 
 interface Props{
-    results: any;
+    results: any
 }
 
 const Products = ({results}: Props) => {

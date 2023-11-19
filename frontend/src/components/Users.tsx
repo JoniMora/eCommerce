@@ -1,10 +1,9 @@
-import { BsFillTrashFill } from "react-icons/bs";
-import { deleteUser, getUsers } from "../api/users";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
-import Loader from "./Loader";
-import { User } from "../Interfaces";
-
+import { BsFillTrashFill } from "react-icons/bs"
+import { deleteUser, getUsers } from "../api/users"
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
+import { toast } from "react-hot-toast"
+import Loader from "./Loader"
+import { User } from "../Interfaces"
 
 interface Props{
     results: any;
@@ -27,7 +26,7 @@ const Users = ({results}: Props) => {
         onError: () => {
             toast.success("Error!")
         },
-    });
+    })
 
     if (isError) return toast.error("Error!")
     if (isLoading) return <Loader />
