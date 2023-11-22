@@ -6,7 +6,7 @@ import Loader from "./Loader"
 import { User } from "../Interfaces"
 
 interface Props{
-    results: any;
+    results: any
 }
 
 const Users = ({results}: Props) => {
@@ -15,12 +15,12 @@ const Users = ({results}: Props) => {
         queryFn: getUsers,
     })
 
-    const queryClient = useQueryClient();
+    const queryClient = useQueryClient()
 
     const deleteUserMutation = useMutation({
         mutationFn: deleteUser,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["users"] });
+            queryClient.invalidateQueries({ queryKey: ["users"] })
             toast.success("User deleted!")
         },
         onError: () => {
@@ -80,7 +80,13 @@ const Users = ({results}: Props) => {
                                 </td>
                                 
                                 <td className="px-4 py-3 flex items-center justify-center gap-4">
-                                    <BsFillTrashFill onClick={() => deleteUserMutation.mutate(user.id)} size={22} className="text-red-400 cursor-pointer"/>
+                                    <BsFillTrashFill onClick={() => { 
+                                            if(user.id){ 
+                                                deleteUserMutation.mutate(user.id)
+                                            }
+                                        }} 
+                                        size={22} 
+                                        className="text-red-400 cursor-pointer"/>
                                 </td>
                             </tr>
                         ))}
@@ -106,7 +112,13 @@ const Users = ({results}: Props) => {
                                 </td>
                                 
                                 <td className="px-4 py-3 flex items-center justify-center gap-4">
-                                    <BsFillTrashFill onClick={() => deleteUserMutation.mutate(user.id)} size={22} className="text-red-400 cursor-pointer"/>
+                                    <BsFillTrashFill onClick={() => {
+                                            if(user.id){ 
+                                                deleteUserMutation.mutate(user.id)
+                                            }
+                                        }} 
+                                        size={22} 
+                                        className="text-red-400 cursor-pointer"/>
                                 </td>
                             </tr>
                         ))}

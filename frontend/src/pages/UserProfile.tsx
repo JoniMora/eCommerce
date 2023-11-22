@@ -1,5 +1,5 @@
 import { useAuthStore } from "../store/auth"
-import { Token, Order } from "../Interfaces"
+import { Token } from "../Interfaces"
 import jwt_decode from "jwt-decode"
 import React, { useState, ChangeEvent, useEffect } from "react"
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
@@ -102,11 +102,7 @@ const UserProfile = () => {
                 {show ? (
                     <>
                         <div className="flex flex-col items-center pb-10">
-                            <img
-                                className="w-24 h-24 mb-3 mt-3 rounded-full shadow-lg"
-                                src={`${import.meta.env.VITE_BACKEND_URL}${user.avatar}`}
-                                alt="User image"
-                            />
+                            <img className="w-24 h-24 mb-3 mt-3 rounded-full shadow-lg" src={`${import.meta.env.VITE_BACKEND_URL}${user.avatar}`} alt="User image"/>
 
                             <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
                                 {user.email}
