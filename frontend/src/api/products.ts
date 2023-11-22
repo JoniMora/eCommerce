@@ -1,7 +1,12 @@
-import { Product } from "../Interfaces";
-import { authAxios, axi } from "./useAxios";
+import { Product } from "../Interfaces"
+import { authAxios, axi } from "./useAxios"
 
-export const categoryAPI = async(category: string) =>{
+export const create_review = async(description: string, rating: number, productID: number) => {
+    const response = await authAxios.post(`/products/review/${productID}/`, {description, rating})
+    return response.data
+}
+
+export const categoryAPI = async(category: string) => {
     const response = await authAxios.get(`/products/category/${category}/`)
     return response.data
 }
@@ -22,7 +27,7 @@ export const getSoloProduct = async (id: number) => {
 }
 
 export const editProduct = async(data: Product) => {
-    const formData = new FormData();
+    const formData = new FormData()
     formData.append("name", data.name)
     formData.append("description", data.description)
     formData.append("count_in_stock", data.count_in_stock.toString())
@@ -40,7 +45,7 @@ export const deleteProduct =async (id: number) => {
 }
 
 export const postProduct = async(data: Product) => {
-    const formData = new FormData();
+    const formData = new FormData()
     formData.append("name", data.name)
     formData.append("description", data.description)
     formData.append("count_in_stock", data.count_in_stock.toString())

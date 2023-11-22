@@ -73,7 +73,9 @@ const SoloOrder = () => {
                         </td>
                                         
                         <td className="px-4 py-3">
-                            {data.created_at.slice(0, 10)}
+                            {data && data.delivered_at !== undefined || null && (
+                                <>{data.created_at.slice(0, 10)}</>
+                            )}
                         </td>
 
                         <td className="px-4 py-3">
